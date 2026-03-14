@@ -1,23 +1,30 @@
-# oreilly2pdf
+# 📚 oreilly2pdf
 
-Export [O'Reilly Learning](https://learning.oreilly.com) books as high-quality PDFs with working images, table of contents, and cross-chapter hyperlinks.
+[![PyPI version](https://img.shields.io/pypi/v/oreilly2pdf?color=blue)](https://pypi.org/project/oreilly2pdf/)
+[![Python versions](https://img.shields.io/pypi/pyversions/oreilly2pdf)](https://pypi.org/project/oreilly2pdf/)
+[![License: MIT](https://img.shields.io/github/license/cruzlorite/oreilly2pdf)](LICENSE)
+[![GitHub stars](https://img.shields.io/github/stars/cruzlorite/oreilly2pdf?style=social)](https://github.com/cruzlorite/oreilly2pdf)
 
-## Features
+**Download any book from [O'Reilly Learning](https://learning.oreilly.com) as a single, high-quality PDF.**
 
-- **Full book export** — cover, chapters, appendices, index, and all front/back matter.
-- **High-fidelity rendering** — uses headless Chrome to capture the exact same layout you see in the browser, including mathematical equations, code blocks, tables, and figures.
-- **Images** — lazy-loaded and dynamically-rendered images are fully resolved before printing.
-- **Cross-chapter links** — internal references (e.g., "see Section 4.3", bibliography citations, index entries) are converted into clickable PDF links that jump to the correct page.
-- **Clean output** — O'Reilly's navigation UI, cookie banners, sidebar menus, and overlays are stripped, leaving only the book content.
+All images, cross-chapter links, table of contents, and index entries just work — exactly as you'd expect from a real book.
 
-## Prerequisites
+> ⚠️ Requires an active O'Reilly Learning subscription.
 
-- **Python 3.10+**
-- **Google Chrome** (or Chromium) installed
-- **ChromeDriver** matching your Chrome version — installed automatically by Selenium 4.20+
-- A valid **O'Reilly Learning** subscription
+---
 
-## Installation
+## ⚡ Quick Start
+
+```bash
+pip install oreilly2pdf
+oreilly2pdf 9781098150952 --cookie-file cookies.json
+```
+
+That's it. You'll get a `9781098150952.pdf` with all chapters merged into one file.
+
+---
+
+## 🔧 Installation
 
 ### From PyPI
 
@@ -33,98 +40,127 @@ cd oreilly2pdf
 pip install .
 ```
 
-## Usage
+### Requirements
 
-```bash
-# Using a cookies file (recommended)
-oreilly2pdf 9781098150952 --cookie-file cookies.json
+- Python 3.10+
+- Google Chrome (or Chromium)
+- ChromeDriver — installed automatically by Selenium 4.20+
 
-# Using inline cookies
-oreilly2pdf 9781098150952 --cookies "BrowserCookie=abc123; logged_in=1; ..."
+---
 
-# Custom output path
-oreilly2pdf 9781098150952 --cookie-file cookies.json -o my_book.pdf
+## 🍪 Getting Your Cookies
 
-# Keep individual chapter PDFs
-oreilly2pdf 9781098150952 --cookie-file cookies.json --keep-chapters
-```
+You need to provide your O'Reilly session cookies so the tool can access your account. There are three easy ways to get them:
 
-### Options
-
-| Flag | Description |
-|---|---|
-| `book_id` | The O'Reilly book identifier (ISBN). |
-| `--cookies` | Session cookies as `key=value` pairs separated by semicolons. |
-| `--cookie-file` | Path to a cookies file (JSON or plain text). |
-| `-o, --output` | Output PDF file path (default: `<book_id>.pdf`). |
-| `--keep-chapters` | Keep individual chapter PDFs in a directory alongside the output. |
-
-## Getting Your Cookies
-
-`oreilly2pdf` needs your O'Reilly session cookies to authenticate. Here's how to get them:
-
-### Option 1 — JSON file (recommended)
+### Way 1 — DevTools Console (fastest)
 
 1. Log in to [learning.oreilly.com](https://learning.oreilly.com) in Chrome.
-2. Open DevTools (`F12`) → **Application** tab → **Cookies** → `https://learning.oreilly.com`.
-3. Create a JSON file with the cookie name/value pairs:
+2. Open DevTools (`F12`) → go to the **Console** tab.
+3. Paste this and press Enter:
+
+```js
+copy(JSON.stringify(Object.fromEntries(document.cookie.split('; ').map(c => c.split('=')))))
+```
+
+4. Your cookies are now in the clipboard. Save them to a file:
+
+```bash
+pbpaste > cookies.json   # macOS
+xclip -o > cookies.json  # Linux
+```
+
+### Way 2 — Cookie-Editor extension
+
+1. Install [Cookie-Editor](https://cookie-editor.com) in your browser.
+2. Go to [learning.oreilly.com](https://learning.oreilly.com) and log in.
+3. Click the Cookie-Editor icon → **Export** → **JSON**.
+4. Paste into `cookies.json` and reformat as `{"name": "value"}` pairs.
+
+### Way 3 — Manual
+
+1. Open DevTools (`F12`) → **Application** tab → **Cookies** → `https://learning.oreilly.com`.
+2. Create a `cookies.json` with the relevant cookie values:
 
 ```json
 {
-  "BrowserCookie": "your_value_here",
-  "logged_in": "1",
-  "orm-jwt": "your_jwt_token",
-  "orm-rt": "your_refresh_token",
-  "groot_sessionid": "your_session_id"
+  "BrowserCookie": "...",
+  "orm-jwt": "...",
+  "orm-rt": "...",
+  "groot_sessionid": "..."
 }
 ```
 
-The exact cookies needed may vary, but `orm-jwt` and `groot_sessionid` are typically the most important. If export fails with authentication errors, try adding more cookies from your browser.
+> **Note**: The most important cookies are typically `orm-jwt` and `groot_sessionid`. If export fails, try adding more cookies from your browser.
 
-> **Tip — browser console**: You can also grab all cookies at once by running this in the DevTools **Console** while on `learning.oreilly.com`:
->
-> ```js
-> JSON.stringify(Object.fromEntries(document.cookie.split('; ').map(c => c.split('='))))
-> ```
->
-> Copy the output and save it as `cookies.json`.
+---
 
-> **Tip — extension**: The [Cookie-Editor](https://cookie-editor.com) browser extension can export all cookies as JSON with one click. Export as JSON, keep only the `learning.oreilly.com` entries, and reformat as `{"name": "value"}` pairs.
+## 📖 Finding the Book ID
 
-4. Save as `cookies.json` and pass it with `--cookie-file cookies.json`.
-
-### Option 2 — Plain text
-
-Copy cookies as a semicolon-separated string:
-
-```bash
-oreilly2pdf 9781098150952 --cookies "BrowserCookie=abc; orm-jwt=eyJ...; groot_sessionid=xyz"
-```
-
-## Finding the Book ID
-
-The book ID is the ISBN that appears in the O'Reilly URL:
+Open any book on O'Reilly and look at the URL — the book ID is the ISBN number:
 
 ```
 https://learning.oreilly.com/library/view/book-title/9781098150952/
                                                      ^^^^^^^^^^^^^
-                                                     This is the book_id
+                                                        book_id
 ```
 
-## How It Works
+---
 
-1. **Fetches the book spine** from the O'Reilly API to get an ordered list of all content files (cover, chapters, appendices, index, etc.).
-2. **Renders each chapter** in headless Chrome with your session cookies.
-3. **Waits for all images** to fully load (handles lazy-loading, viewport-triggered loading, and dynamic image injection).
-4. **Cleans the page** — removes the O'Reilly reading UI (header, sidebar, navigation, cookie banners, overlays) and keeps only the article content.
-5. **Creates PDF named destinations** for every element with an `id` attribute, enabling cross-chapter link resolution.
-6. **Prints each chapter to PDF** using the Chrome DevTools Protocol.
-7. **Merges all chapter PDFs** into a single file and rewrites internal URI links as PDF GoTo links, so cross-chapter references, index entries, and bibliography citations all work as clickable links.
+## 🚀 Usage
 
-## Acknowledgements
+```bash
+# Basic usage
+oreilly2pdf <book_id> --cookie-file cookies.json
+
+# Custom output filename
+oreilly2pdf 9781098150952 --cookie-file cookies.json -o my_book.pdf
+
+# Inline cookies instead of a file
+oreilly2pdf 9781098150952 --cookies "orm-jwt=eyJ...; groot_sessionid=xyz"
+
+# Keep individual chapter PDFs alongside the merged output
+oreilly2pdf 9781098150952 --cookie-file cookies.json --keep-chapters
+```
+
+### All Options
+
+| Option | Description |
+|---|---|
+| `book_id` | O'Reilly book identifier (ISBN) — **required** |
+| `--cookie-file FILE` | Path to a cookies file (JSON or plain text) |
+| `--cookies STRING` | Inline cookies (`key=value; key2=value2`) |
+| `-o, --output FILE` | Output path (default: `<book_id>.pdf`) |
+| `--keep-chapters` | Save individual chapter PDFs too |
+
+---
+
+## ✨ Features
+
+| | |
+|---|---|
+| 📄 **Full book** | Cover, TOC, all chapters, appendices, index — everything |
+| 🖼️ **Images** | Lazy-loaded and dynamic images fully resolved |
+| �� **Cross-chapter links** | "See Section 4.3" actually jumps to Section 4.3 |
+| 🧹 **Clean output** | No navigation bars, cookie banners, or popups |
+| 🎨 **Faithful rendering** | Math, code blocks, tables, figures — pixel-perfect |
+
+---
+
+## 🔍 How It Works
+
+1. Fetches the book's table of contents from the O'Reilly API.
+2. Opens each chapter in headless Chrome with your session cookies.
+3. Waits for all images (including lazy-loaded ones) to fully render.
+4. Strips the O'Reilly UI — keeps only the book content.
+5. Prints each chapter to PDF via Chrome DevTools Protocol.
+6. Merges everything into a single PDF and rewrites cross-chapter links so they work as clickable in-document jumps.
+
+---
+
+## 🙏 Acknowledgements
 
 Inspired by [oreilly-epub-downloader](https://github.com/tctibbs/oreilly-epub-downloader) by [@tctibbs](https://github.com/tctibbs).
 
-## License
+## 📄 License
 
 [MIT](LICENSE)
