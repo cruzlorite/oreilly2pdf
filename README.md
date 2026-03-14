@@ -5,7 +5,7 @@
 [![License: MIT](https://img.shields.io/github/license/cruzlorite/oreilly2pdf)](LICENSE)
 [![GitHub stars](https://img.shields.io/github/stars/cruzlorite/oreilly2pdf?style=social)](https://github.com/cruzlorite/oreilly2pdf)
 
-**Download any book from [O'Reilly Learning](https://learning.oreilly.com) as a single, high-quality PDF.**
+**Download any book from [O'Reilly Learning](https://learning.oreilly.com) as a single, high-quality PDF — perfect for offline reading.**
 
 All images, cross-chapter links, table of contents, and index entries just work — exactly as you'd expect from a real book.
 
@@ -154,6 +154,18 @@ oreilly2pdf 9781098150952 --cookie-file cookies.json --keep-chapters
 4. Strips the O'Reilly UI — keeps only the book content.
 5. Prints each chapter to PDF via Chrome DevTools Protocol.
 6. Merges everything into a single PDF and rewrites cross-chapter links so they work as clickable in-document jumps.
+
+---
+
+## ⚖️ Disclaimer
+
+This tool is intended for **personal, offline use only** by users who hold a valid O'Reilly Learning subscription. It accesses content you are already entitled to read through your account.
+
+- **Do not** distribute, share, or upload exported PDFs.
+- **Do not** use this tool to circumvent access controls or pirate content.
+- You are solely responsible for complying with O'Reilly's [Terms of Service](https://www.oreilly.com/terms/) and applicable copyright law.
+
+The authors of this project are not affiliated with O'Reilly Media and assume no liability for misuse.
 
 ---
 
