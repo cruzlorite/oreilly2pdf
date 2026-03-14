@@ -140,7 +140,7 @@ oreilly2pdf 9781098150952 --cookie-file cookies.json --keep-chapters
 |---|---|
 | 📄 **Full book** | Cover, TOC, all chapters, appendices, index — everything |
 | 🖼️ **Images** | Lazy-loaded and dynamic images fully resolved |
-| �� **Cross-chapter links** | "See Section 4.3" actually jumps to Section 4.3 |
+| 🔗 **Cross-chapter links** | "See Section 4.3" actually jumps to Section 4.3 |
 | 🧹 **Clean output** | No navigation bars, cookie banners, or popups |
 | 🎨 **Faithful rendering** | Math, code blocks, tables, figures — pixel-perfect |
 
