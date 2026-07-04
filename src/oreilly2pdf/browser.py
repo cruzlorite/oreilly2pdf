@@ -398,7 +398,8 @@ def render_chapters(
 
             # Print to PDF
             pdf_bytes = _print_to_pdf(driver)
-            pdf_path = output_dir / f"{idx:04d}_{chapter.filename}.pdf"
+            safe_name = chapter.filename.replace("/", "_")
+            pdf_path = output_dir / f"{idx:04d}_{safe_name}.pdf"
             pdf_path.write_bytes(pdf_bytes)
             pdf_paths.append(pdf_path)
 
